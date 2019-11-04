@@ -19,6 +19,7 @@ class TodoRouter(private val handler: ObjectsHandler) {
                         GET("/", handler::getAll),
                         POST("/", handler::createObj),
                         GET("/{id}", handler::getById))
+                       // DELETE("/{id}", handler::deleteById)
             }
     )
 }

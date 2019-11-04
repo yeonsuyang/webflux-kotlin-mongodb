@@ -7,7 +7,8 @@ import org.springframework.data.mongodb.core.ReactiveMongoTemplate
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import reactor.core.publisher.Flux
-
+import reactor.core.publisher.toMono
+import java.util.concurrent.ConcurrentHashMap
 
 
 interface ObjectsService{
@@ -16,9 +17,7 @@ interface ObjectsService{
     fun findById(id: Int): Mono<Object>
 
     fun createObject(obj: Object): Mono<Object>
-
-    //fun updateObject(obj: Object, id: Int): Mono<Object>
-
+    fun printObject(obj: Mono<Object>) : Mono<*>
 }
 
 @Service("objectService")
@@ -40,7 +39,10 @@ class ObjectServiceImpl : ObjectsService{
         return objectsRepository.save(obj)
     }
 
-
-
+    override fun printObject(obj: Mono<Object>): Mono<*> {
+       return obj.subscribe {
+           println(obj)
+       }.toMono()
+    }
 }
 

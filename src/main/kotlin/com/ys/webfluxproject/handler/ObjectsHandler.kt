@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.web.reactive.function.server.ServerResponse.*
+import java.net.URI
 
 
 @Component
@@ -25,6 +26,12 @@ class ObjectsHandler(private val objectsService: ObjectsService) {
 
     fun getAll(request: ServerRequest) = ServerResponse.ok().contentType(APPLICATION_JSON).body(objectsService.findAll(),Object::class.java)
 
+    //fun createObj(request: ServerRequest) = request.bodyToMono(Object::class.java)
+     //       .flatMap { ok().contentType(APPLICATION_JSON).body(objectsService.createObject(it),Object::class.java) }
+
     fun createObj(request: ServerRequest) = request.bodyToMono(Object::class.java)
-            .flatMap { ok().contentType(APPLICATION_JSON).body(objectsService.createObject(it),Object::class.java) }
+            .flatMap { created(URI.create("/objects/${it.id}")).build() }
+            .onErrorResume(Exception::class.java) { badRequest().body(fromObject("error"))  }
+
+    //fun deleteById(request: ServerRequest)
 }
